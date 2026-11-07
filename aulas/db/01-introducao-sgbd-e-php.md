@@ -84,6 +84,29 @@ Sintaxe: o código PHP pode ser misturado com HTML ou ficar sozinho no script. E
 - Podem ser definidas pelo usuário ou nativas.
 - Nos exemplos: `define`, `echo`, e as de conexão e manuseio de dados (`mysql_connect`, `pg_connect`, `mysql_query`, `pg_query`).
 
+### `declare`
+
+Diretiva de compilação — instrui o interpretador PHP sobre como processar o arquivo.
+
+```php
+declare(strict_types=1);   // tipagem estrita neste arquivo
+declare(ticks=1);          // executa callback a cada N instruções
+declare(encoding='UTF-8'); // define encoding do arquivo (raro)
+```
+
+**`strict_types=1`** é o uso mais comum. Sem ele, PHP converte tipos silenciosamente:
+
+```php
+function soma(int $a, int $b): int { return $a + $b; }
+
+soma("2", "3"); // sem strict_types: funciona, retorna 5
+soma("2", "3"); // com strict_types: TypeError
+```
+
+Regras:
+- Deve ser a **primeira instrução** do arquivo, antes de qualquer código.
+- Afeta **só o arquivo onde está** — não se propaga para arquivos incluídos via `require`/`include`.
+
 ### Extensões, bibliotecas e classes
 
 - **Extensões**: arquivos binários que contêm bibliotecas (`.dll` no Windows, `.so` em sistemas unix-like).

@@ -93,7 +93,7 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault(); // cancela o envio normal, que trocaria de página
 
-            const resultado = await fetch('processa.php', {
+            const resultado = await fetch('scripts/processa.php', {
                 method: 'POST',
                 body: new FormData(form)
             });
