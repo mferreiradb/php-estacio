@@ -107,7 +107,7 @@ Cada exemplo abaixo tem duas partes:
 </head>
 <body>
     <h1>Funções em PHP</h1>
-    <p>Parte 1: funções em geral (exemplos 1 a 11). Parte 2: funções de arrays, com destaque para <code>print_r</code>, <code>count</code>, <code>unset</code> e <code>array_splice</code>.</p>
+    <p>Parte 1: funções em geral (exemplos 1 a 11). Parte 2: funções de arrays, com destaque para <code>print_r</code>, <code>count</code>, <code>unset</code> e <code>array_splice</code>. Parte 3: métodos estáticos e o operador <code>::</code>.</p>
 
     <!-- ============================== PARTE 1 ============================== -->
     <h1>Parte 1: Funções</h1>
@@ -851,6 +851,130 @@ echo array_sum([1, 2, 3]);             // soma</pre>
     echo array_sum([1, 2, 3]);
     ?></pre>
 
+    <!-- ============================== PARTE 3 ============================== -->
+    <h1>Parte 3: Métodos estáticos e o operador ::</h1>
+    <p>O operador <code>::</code> (resolução de escopo, ou "dois pontos duplos") acessa membros que pertencem à <strong>classe</strong>, sem precisar criar um objeto. Para membros de um <strong>objeto</strong>, usa-se <code>-&gt;</code>.</p>
+
+    <h2>21. Constantes e métodos estáticos</h2>
+    <p>Uma constante de classe (<code>const</code>) e um método <code>static</code> são chamados direto pelo nome da classe, seguido de <code>::</code>.</p>
+    <pre>class Matematica
+{
+    const PI = 3.14159;
+
+    public static function dobro(int $n): int
+    {
+        return $n * 2;
+    }
+}
+
+echo Matematica::PI;
+echo Matematica::dobro(4);</pre>
+    <pre class="resultado"><?php
+    class Matematica
+    {
+        const PI = 3.14159;
+
+        public static function dobro(int $n): int
+        {
+            return $n * 2;
+        }
+    }
+
+    echo Matematica::PI . " ";
+    echo Matematica::dobro(4);
+    ?></pre>
+
+    <h2>22. Propriedades estáticas e self::</h2>
+    <p>Uma propriedade <code>static</code> é compartilhada por toda a classe e acessada com <code>Classe::$nome</code> (o <code>$</code> fica depois do <code>::</code>). Dentro da própria classe, use <code>self::</code> no lugar do nome dela.</p>
+    <pre>class Contador
+{
+    public static int $total = 0;
+
+    public static function incrementar(): void
+    {
+        self::$total++;
+    }
+}
+
+Contador::incrementar();
+Contador::incrementar();
+echo Contador::$total;</pre>
+    <pre class="resultado"><?php
+    class Contador
+    {
+        public static int $total = 0;
+
+        public static function incrementar(): void
+        {
+            self::$total++;
+        }
+    }
+
+    Contador::incrementar();
+    Contador::incrementar();
+    echo Contador::$total;
+    ?></pre>
+
+    <h2>23. parent:: e ::class</h2>
+    <p><code>parent::</code> chama um método da classe pai. <code>NomeDaClasse::class</code> devolve o nome completo da classe como texto.</p>
+    <pre>class Animal
+{
+    public function falar(): string
+    {
+        return "...";
+    }
+}
+
+class Cachorro extends Animal
+{
+    public function falar(): string
+    {
+        return parent::falar() . " Au!";
+    }
+}
+
+$c = new Cachorro();
+echo $c->falar();
+echo Cachorro::class;</pre>
+    <pre class="resultado"><?php
+    class Animal
+    {
+        public function falar(): string
+        {
+            return "...";
+        }
+    }
+
+    class Cachorro extends Animal
+    {
+        public function falar(): string
+        {
+            return parent::falar() . " Au!";
+        }
+    }
+
+    $c = new Cachorro();
+    echo $c->falar() . " ";
+    echo Cachorro::class;
+    ?></pre>
+
+    <h2>:: ou -&gt;?</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Operador</th>
+                <th>Acessa</th>
+                <th>Precisa de objeto?</th>
+                <th>Exemplo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>::</code></td><td>Constantes, métodos e propriedades estáticas, <code>self</code>, <code>parent</code>, <code>static</code>, <code>class</code></td><td>Não</td><td><code>PDO::FETCH_ASSOC</code>, <code>Status::Ativo</code></td></tr>
+            <tr><td><code>-&gt;</code></td><td>Propriedades e métodos de um objeto</td><td>Sim</td><td><code>$pdo-&gt;query(...)</code></td></tr>
+        </tbody>
+    </table>
+    <p>É por isso que, no estudo de PDO, aparece <code>PDO::FETCH_ASSOC</code> (constante da classe) e <code>$pdo-&gt;prepare(...)</code> (método do objeto criado).</p>
+
     <h2>Referência rápida</h2>
     <table>
         <thead>
@@ -877,6 +1001,7 @@ echo array_sum([1, 2, 3]);             // soma</pre>
             <tr><td><code>array_unique</code> / <code>array_reverse</code></td><td>Remove repetidos / inverte</td><td>Não</td></tr>
             <tr><td><code>implode</code> / <code>explode</code></td><td>Array para texto / texto para array</td><td>Não</td></tr>
             <tr><td><code>range</code> / <code>array_combine</code></td><td>Cria sequência / une chaves e valores</td><td>Não</td></tr>
+            <tr><td><code>Classe::</code></td><td>Acessa constante, método ou propriedade estática (Parte 3)</td><td>Não se aplica</td></tr>
         </tbody>
     </table>
 </body>
